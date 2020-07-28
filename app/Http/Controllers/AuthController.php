@@ -7,6 +7,12 @@ use App\User;
 
 class AuthController extends Controller
 {
+    public function index() {
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'welcome'
+        ]);
+    }
     public function register(Request $request)
     {
         $user = User::create([
@@ -46,5 +52,14 @@ class AuthController extends Controller
            'name' => $user->name,
             'email' => $user->email
         ]);
+    }
+
+    public function logout(Request $request) {
+        $user = $request->user();
+        auth()->invalidate();
+        return response()->json([
+            'name' => $user->name,
+            'status' => 'Logged out.'
+            ]);
     }
 }
