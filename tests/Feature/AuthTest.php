@@ -22,15 +22,15 @@ class AuthTest extends TestCase
     }
 
     public function testUserInfoWithoutLogin() {
-        $response = $this->post('/api/user');
+        $response = $this->json('POST', '/api/user');
 
-        $response->assertStatus(302);
+        $response->assertStatus(401);
     }
 
     public function testUserLogoutWithoutToken() {
-        $response = $this->post('/api/logout');
+        $response = $this->json('POST', '/api/logout');
 
-        $response->assertStatus(302);
+        $response->assertStatus(401);
     }
 
     public function testTest() {
@@ -38,4 +38,3 @@ class AuthTest extends TestCase
         $response->assertStatus(401);
     }
 }
-// 302 was return cuz of HTTP instead of AJAX
