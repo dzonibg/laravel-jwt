@@ -1,0 +1,25 @@
+# .travis.yml
+dist: bionic
+
+language: php
+
+php:
+  - 7.3
+services:
+  - mysql
+
+cache:
+  directories:
+    - node_modules
+    - vendor
+
+before_script:
+  - cp .env.travis .env
+  - sudo mysql -e 'CREATE DATABASE larajwt;'
+  - composer self-update
+  - composer install --no-interaction
+  - php artisan key:generate
+  - php artisan migrate
+  - php artisan jwt:secret
+script:
+  - vendor/bin/phpunit
