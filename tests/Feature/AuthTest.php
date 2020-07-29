@@ -4,8 +4,15 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Namshi\JOSE\Test\SimpleJWSTest;
 use Tests\TestCase;
 use App\User;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Contracts\Providers\JWT;
+use Tymon\JWTAuth\Facades\JWTFactory;
+use Tymon\JWTAuth\Facades\JWTProvider;
+use Tymon\JWTAuth\JWTAuth;
+
 
 class AuthTest extends TestCase
 {
@@ -60,6 +67,8 @@ class AuthTest extends TestCase
             'token_type' => 'bearer',
             'access_token' => $response->json('access_token'),
         ]);
+        $this->assertTrue($this->isAuthenticated());
+
     }
 
     public function testLoggedInUserInfo() {
@@ -70,5 +79,33 @@ class AuthTest extends TestCase
             'password' => 'password'
         ]);
         $this->actingAs($user)->json('POST', '/api/user')->assertStatus(200);
+        $this->assertTrue($this->isAuthenticated());
+        //TODO assert user credentials are same
+
     }
+
+
+    public function testLoggedInUserLogout() {
+        $user = factory(User::class)->make();
+        $this->actingAs($user)->assertAuthenticated('api');
+        $user->save();
+        $credentials = $this->json('POST', '/api/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+        $token = $credentials->json('token');
+
+        //TODO DRY this out
+
+        $response = $this->actingAs($user)->postJson('/api/logout', [], [
+            'token_type' => 'bearer',
+            'access_token' => $token
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+
+
+
 }
