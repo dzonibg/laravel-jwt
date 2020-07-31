@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use Tymon\JWTAuth\JWTAuth;
+use JWTAuth;
 
 class AuthController extends Controller
 {

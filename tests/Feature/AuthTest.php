@@ -12,11 +12,14 @@ use Tymon\JWTAuth\Contracts\Providers\JWT;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Facades\JWTProvider;
 use Tymon\JWTAuth\JWTAuth;
+//use JWTAuth; //tests fail if using default namespace for class
 
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
+    private $user;
+    private $token;
     /**
      * A basic feature test example.
      *
@@ -57,6 +60,7 @@ class AuthTest extends TestCase
 
     public function testUserLogin() {
         $user = factory(User::class)->make();
+        $this->user = $user;
         $user->save();
         $response = $this->json('POST', '/api/login', [
             'email' => $user->email,
@@ -68,6 +72,7 @@ class AuthTest extends TestCase
             'access_token' => $response->json('access_token'),
         ]);
         $this->assertTrue($this->isAuthenticated());
+        $this->token = $response->json('access_token');
 
     }
 
@@ -86,20 +91,22 @@ class AuthTest extends TestCase
 
 
     public function testLoggedInUserLogout() {
-        $user = factory(User::class)->make();
-        $this->actingAs($user)->assertAuthenticated('api');
-        $user->save();
-        $credentials = $this->json('POST', '/api/login', [
-            'email' => $user->email,
-            'password' => 'password'
-        ]);
-        $token = $credentials->json('token');
-
+        $this->testUserLogin();
+//        $user = factory(User::class)->make();
+//        $this->actingAs($user);
+//        $user = $this->actingAs($user);
+//        $user->save();
+//        $credentials = $this->json('POST', '/api/login', [
+//            'email' => $user->email,
+//            'password' => 'password'
+//        ]);
+//        $token = $credentials->json('token');
+//        $token = JWTAuth::fromUser($user);
         //TODO DRY this out
 
-        $response = $this->actingAs($user)->postJson('/api/logout', [], [
+        $response = $this->actingAs($this->user)->postJson('/api/logout', [], [
             'token_type' => 'bearer',
-            'access_token' => $token
+            'access_token' => $this->token
         ]);
 
         $response->assertStatus(200);
