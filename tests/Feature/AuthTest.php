@@ -11,9 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Tymon\JWTAuth\Contracts\Providers\JWT;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Facades\JWTProvider;
-use Tymon\JWTAuth\JWTAuth;
-//use JWTAuth; //tests fail if using default namespace for class
-
+use JWTAuth;
 
 class AuthTest extends TestCase
 {
@@ -56,11 +54,11 @@ class AuthTest extends TestCase
             'name' => $user->name,
             'email' => $user->email
         ]);
+        return $user;
     }
 
     public function testUserLogin() {
         $user = factory(User::class)->make();
-        $this->user = $user;
         $user->save();
         $response = $this->json('POST', '/api/login', [
             'email' => $user->email,
@@ -72,7 +70,8 @@ class AuthTest extends TestCase
             'access_token' => $response->json('access_token'),
         ]);
         $this->assertTrue($this->isAuthenticated());
-        $this->token = $response->json('access_token');
+        $token = $response->json('access_token');
+        return $token;
 
     }
 
@@ -88,27 +87,14 @@ class AuthTest extends TestCase
         //TODO assert user credentials are same
 
     }
-
-
-    public function testLoggedInUserLogout() {
-        $this->testUserLogin();
-//        $user = factory(User::class)->make();
-//        $this->actingAs($user);
-//        $user = $this->actingAs($user);
-//        $user->save();
-//        $credentials = $this->json('POST', '/api/login', [
-//            'email' => $user->email,
-//            'password' => 'password'
-//        ]);
-//        $token = $credentials->json('token');
-//        $token = JWTAuth::fromUser($user);
-        //TODO DRY this out
-
-        $response = $this->actingAs($this->user)->postJson('/api/logout', [], [
+    /**
+     * @depends testUserLogin
+     */
+    public function testLoggedInUserLogout($token) {
+        $response = $this->postJson('/api/logout', [], [
             'token_type' => 'bearer',
-            'access_token' => $this->token
+            'access_token' => $token,
         ]);
-
         $response->assertStatus(200);
     }
 
