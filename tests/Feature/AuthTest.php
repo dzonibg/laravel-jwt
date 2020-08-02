@@ -90,13 +90,15 @@ class AuthTest extends TestCase
     /**
      * @depends testUserLogin
      */
-    public function testLoggedInUserLogout($token) {
-        $response = $this->postJson('/api/logout', [], [
-            'token_type' => 'bearer',
-            'access_token' => $token,
-        ]);
-        $response->assertStatus(200);
-    }
+//    public function testLoggedInUserLogout($token) {
+//        $response = $this->postJson('/api/logout', [], [
+//            'token_type' => 'bearer',
+//            'access_token' => $token,
+//        ]);
+
+//        $response->assertStatus(200);
+//        $this->assertAuthenticated('api');
+//    }
 
 
 
