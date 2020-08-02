@@ -44,5 +44,19 @@ class AuthorizationTest extends TestCase
         $response = $this->postJson('/api/user', [
             'token' => $token
         ])->assertStatus(200);
+        $response->assertJson([
+            'email' => $user->email,
+            'name' => $user->name,
+        ]);
+    }
+
+    public function testUserLogout() {
+        $user = factory(User::class)->create();
+        $token = \JWTAuth::fromUser($user);
+        $response = $this->postJson('/api/logout', [
+            'token' => $token
+        ]);
+        $response->assertStatus(200);
+        //TODO add message
     }
 }
