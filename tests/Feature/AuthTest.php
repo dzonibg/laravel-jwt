@@ -15,6 +15,9 @@ use JWTAuth;
 
 class AuthTest extends TestCase
 {
+
+    // DEPRECATED - AuthorizationTest.php are the new tests.
+
     use RefreshDatabase;
     private $user;
     private $token;
@@ -87,18 +90,6 @@ class AuthTest extends TestCase
         //TODO assert user credentials are same
 
     }
-    /**
-     * @depends testUserLogin
-     */
-//    public function testLoggedInUserLogout($token) {
-//        $response = $this->postJson('/api/logout', [], [
-//            'token_type' => 'bearer',
-//            'access_token' => $token,
-//        ]);
-
-//        $response->assertStatus(200);
-//        $this->assertAuthenticated('api');
-//    }
 
 
 

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tymon\JWTAuth\JWTAuth;
+use Faker\Generator as Faker;
 
 class AuthorizationTest extends TestCase
 {
@@ -57,6 +58,35 @@ class AuthorizationTest extends TestCase
             'token' => $token
         ]);
         $response->assertStatus(200);
-        //TODO add message
+        $response->assertJson([
+            'name' => $user->name,
+            'status' => 'Logged out.'
+        ]);
+    }
+
+    //tokenless tests
+
+    public function testUserLogoutWithoutToken() {
+        $user = factory(User::class)->create();
+        $response = $this->postJson('/api/logout', [
+            'token' => ''
+        ]);
+        $response->assertStatus(401);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+    }
+
+    public function testUserInfoWithoutToken() {
+        $response = $this->postJson('/api/user', []);
+        $response->assertStatus(401);
+        $response->assertJson(['message' => 'Unauthenticated.']);
+    }
+
+    public function testBadLoginCredentials() {
+        $response = $this->postJson('/api/login', [
+            'email' => 'test@test.test',
+            'password' => '122314214'
+        ]);
+        $response->assertStatus(401);
+        $response->assertJson(['error' => 'Unauthorized']);
     }
 }
