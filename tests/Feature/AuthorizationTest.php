@@ -89,4 +89,5 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(401);
         $response->assertJson(['error' => 'Unauthorized']);
     }
+
 }
