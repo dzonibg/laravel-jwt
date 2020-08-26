@@ -40,7 +40,7 @@ class CrudGenerate extends Command
      *
      * @return String
      */
-    public function handle()
+    public function handle() //TODO clear this up
     {
         $name = $this->argument('name');
         $this->controller($name);
