@@ -60,7 +60,7 @@ class AuthorizationTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             'name' => $user->name,
-            'status' => 'Logged out.'
+            'meessage' => 'Logged out.'
         ]);
     }
 
