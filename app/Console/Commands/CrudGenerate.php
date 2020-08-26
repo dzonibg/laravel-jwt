@@ -49,7 +49,7 @@ class CrudGenerate extends Command
         $this->migration($name);
 
         \File::append(base_path('routes/api.php'), 'Route::resource(\'' . STR::plural(strtolower($name)) . "', '{$name}Controller');");
-        $this->info('Created ' . $name . '.');
+        $this->info('Created ' . $name . ' model, controller, route, request and migration.');
     }
 
     protected function getStub($type)
@@ -117,9 +117,10 @@ class CrudGenerate extends Command
             ],
             $this->getStub('Migration')
         );
+        $date = date("Y_m_d_") . rand(000000, 100000);
         $migrationName = strtolower(STR::plural($name));
 
-        file_put_contents(database_path("/migrations/create_{$migrationName}_table.php"), $migrationTemplate);
+        file_put_contents(database_path("/migrations/{$date}_create_{$migrationName}_table.php"), $migrationTemplate);
 
     }
 
