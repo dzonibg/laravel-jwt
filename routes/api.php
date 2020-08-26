@@ -23,4 +23,3 @@ Route::post('/register', 'AuthController@register');
 Route::post('/login', 'AuthController@login')->name('login');
 Route::post('/user', 'AuthController@user')->middleware('auth:api');
 Route::post('/logout', 'AuthController@logout')->middleware('auth:api');
-Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');Route::resource('tests', 'TestController');
