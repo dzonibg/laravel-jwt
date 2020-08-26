@@ -43,7 +43,10 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+            'message' => "Logged in."
         ]);
     }
 
@@ -60,7 +63,7 @@ class AuthController extends Controller
         auth()->invalidate();
         return response()->json([
             'name' => $user->name,
-            'status' => 'Logged out.'
+            'message' => 'Logged out.'
             ]);
     }
 }
